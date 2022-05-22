@@ -19,7 +19,9 @@
 /* USER CODE END Header */
 /* Includes ------------------------------------------------------------------*/
 #include "main.h"
+#include "i2c.h"
 #include "rtc.h"
+#include "spi.h"
 #include "usart.h"
 #include "gpio.h"
 
@@ -98,6 +100,8 @@ int main(void)
   MX_GPIO_Init();
   MX_RTC_Init();
   MX_USART3_UART_Init();
+  MX_I2C1_Init();
+  MX_SPI1_Init();
   /* USER CODE BEGIN 2 */
   printf("Bootloader start...\r\n");
 
@@ -116,6 +120,8 @@ int main(void)
 //  		HAL_UART_MspDeInit(&huart1);
 //  		HAL_SPI_MspDeInit(&hspi1);
   		MX_GPIO_DeInit();
+  		HAL_I2C_MspDeInit(&hi2c1);
+  		HAL_SPI_MspDeInit(&hspi1);
 
   		HAL_RCC_DeInit();
   		HAL_DeInit();
