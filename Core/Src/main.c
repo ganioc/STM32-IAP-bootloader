@@ -15,10 +15,12 @@
   *
   ******************************************************************************
   */
+#include <stdio.h>
 /* USER CODE END Header */
 /* Includes ------------------------------------------------------------------*/
 #include "main.h"
 #include "rtc.h"
+#include "usart.h"
 #include "gpio.h"
 
 /* Private includes ----------------------------------------------------------*/
@@ -30,6 +32,7 @@
 /* USER CODE BEGIN PTD */
 pFunction JumpToApplication;
 uint32_t JumpAddress;
+uint8_t buf[128];
 
 /* USER CODE END PTD */
 
@@ -56,7 +59,13 @@ void SystemClock_Config(void);
 
 /* Private user code ---------------------------------------------------------*/
 /* USER CODE BEGIN 0 */
-
+#ifdef __GNUC__
+/* With GCC, small printf (option LD Linker->Libraries->Small printf
+ set to 'Yes') calls __io_putchar() */
+#define PUTCHAR_PROTOTYPE int __io_putchar(int ch)
+#else
+#define PUTCHAR_PROTOTYPE int fputc(int ch, FILE *f)
+#endif /* __GNUC__ */
 /* USER CODE END 0 */
 
 /**
@@ -88,7 +97,10 @@ int main(void)
   /* Initialize all configured peripherals */
   MX_GPIO_Init();
   MX_RTC_Init();
+  MX_USART3_UART_Init();
   /* USER CODE BEGIN 2 */
+  printf("Bootloader start...\r\n");
+
   if (((*(__IO uint32_t*) APPLICATION_ADDRESS ) & 0x2FFE0000) == 0x20000000) {
   		/* Jump to user application */
 
@@ -100,11 +112,11 @@ int main(void)
   		__HAL_RCC_SYSCFG_CLK_DISABLE();
 //
   		HAL_RTC_MspDeInit(&hrtc);
-//  		HAL_UART_MspDeInit(&huart3);
+  		HAL_UART_MspDeInit(&huart3);
 //  		HAL_UART_MspDeInit(&huart1);
 //  		HAL_SPI_MspDeInit(&hspi1);
   		MX_GPIO_DeInit();
-//
+
   		HAL_RCC_DeInit();
   		HAL_DeInit();
 
@@ -180,7 +192,18 @@ void SystemClock_Config(void)
 }
 
 /* USER CODE BEGIN 4 */
+/**
+ * @brief  Retargets the C library printf function to the USART.
+ * @param  None
+ * @retval None
+ */
+PUTCHAR_PROTOTYPE {
+	/* Place your implementation of fputc here */
+	/* e.g. write a character to the USART1 and Loop until the end of transmission */
+	HAL_UART_Transmit(&huart3, (uint8_t*) &ch, 1, 0xFFFF);
 
+	return ch;
+}
 /* USER CODE END 4 */
 
 /**
