@@ -97,16 +97,16 @@ int main(void)
 //  		SysTick->LOAD = 0;
 //  		SysTick->VAL = 0;
 //  		__disable_irq();
-//  		__HAL_RCC_SYSCFG_CLK_DISABLE();
+  		__HAL_RCC_SYSCFG_CLK_DISABLE();
 //
-//  		HAL_RTC_MspDeInit(&hrtc);
+  		HAL_RTC_MspDeInit(&hrtc);
 //  		HAL_UART_MspDeInit(&huart3);
 //  		HAL_UART_MspDeInit(&huart1);
 //  		HAL_SPI_MspDeInit(&hspi1);
-//  		MX_GPIO_DeInit();
+  		MX_GPIO_DeInit();
 //
-//  		HAL_RCC_DeInit();
-//  		HAL_DeInit();
+  		HAL_RCC_DeInit();
+  		HAL_DeInit();
 
   		JumpAddress = *(__IO uint32_t*) (APPLICATION_ADDRESS + 4);
   		JumpToApplication = (pFunction) (JumpAddress);

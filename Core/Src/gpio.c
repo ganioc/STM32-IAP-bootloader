@@ -62,5 +62,15 @@ void MX_GPIO_Init(void)
 }
 
 /* USER CODE BEGIN 2 */
+void MX_GPIO_DeInit(void) {
+	/* GPIO Ports Clock Enable */
+	__HAL_RCC_GPIOC_CLK_DISABLE();
+	__HAL_RCC_GPIOD_CLK_DISABLE();
+	__HAL_RCC_GPIOA_CLK_DISABLE();
+	__HAL_RCC_GPIOB_CLK_DISABLE();
 
+	HAL_GPIO_DeInit(LED0_GPIO_Port, LED0_Pin);
+
+
+}
 /* USER CODE END 2 */
